@@ -202,6 +202,18 @@
     </style>
   </head>
   <body>
+    <audio id="snake-audio">
+      <source src="snake_sound.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="background-music" loop>
+      <source src="background_music.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="win-music">
+      <source src="win_music.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="ladder-music">
+      <source src="ladder_music.mp3" type="audio/mpeg" />
+    </audio>
     <div class="container">
       <h1 id="game-title" style="color: black">🎲 Ular Tangga 🎲</h1>
       <div id="game-setup">
@@ -264,6 +276,9 @@
           .getElementById("roll-dice")
           .setAttribute("onclick", "rollDice()");
         document.getElementById("notification").textContent = "";
+
+        // **Mainkan musik latar saat permainan dimulai**
+        document.getElementById("background-music").play();
 
         createBoard();
         updateBoard();
@@ -347,6 +362,12 @@
             ).textContent = `${currentPlayer} naik dari posisi ${from} ke posisi ${to}! 🎉`;
             animateBlinking(from, to);
             players[currentPlayer] = to;
+
+            // **Mainkan musik efek tangga saat pemain naik**
+            document.getElementById("ladder-music").play();
+
+            // **Kecilkan volume musik latar saat naik tangga**
+            document.getElementById("background-music").volume = 0.2; // Volume kecil (0.2)
           } else if (snakes[newPosition]) {
             const from = oldPosition;
             const to = snakes[newPosition];
@@ -355,14 +376,30 @@
             ).textContent = `${currentPlayer} turun dari posisi ${from} ke posisi ${to} 🐍`;
             animateBlinking(from, to);
             players[currentPlayer] = to;
+
+            // **Mainkan musik efek ular saat pemain turun**
+            document.getElementById("snake-music").play();
+
+            // **Kecilkan volume musik latar saat turun ular**
+            document.getElementById("background-music").volume = 0.2; // Volume kecil (0.2)
           } else {
             document.getElementById("notification").textContent = ""; // Kosongkan notifikasi jika tidak ada tangga atau ular
+
+            // **Setel volume musik latar ke normal**
+            document.getElementById("background-music").volume = 1; // Volume normal (1)
           }
 
+          // **Cek jika pemain mencapai posisi 100 dan menang**
           if (players[currentPlayer] === 100) {
+            // Hentikan musik latar
+            document.getElementById("background-music").pause();
+
+            // Mainkan musik kemenangan
+            document.getElementById("win-music").play();
+
             if (
               confirm(
-                `🎉 ${currentPlayer} MENANG! 🏆 Apakah Anda yakin ingin mulai ulang permainan?`
+                `🎉 ${currentPlayer} MENANG! 🏆 Apakah Anda ingin mulai ulang permainan?`
               )
             ) {
               location.reload();
