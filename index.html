@@ -1,367 +1,409 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ular Tangga</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-image: url('photo_5845072339916666598_x.jpg');
-            background-size: cover;
-            padding: 20px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: black;
+        background-size: cover;
+        padding: 20px;
+      }
 
+      .container {
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 10px;
+        background: #333;
+        box-shadow: 10 10 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .board-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 2px;
+        border: 2px solid #333;
+        background-color: white;
+        width: 90%;
+        max-width: 400px;
+        height: 90%;
+        max-height: 400px;
+        margin: 0 auto;
+      }
+
+      .cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        border: 1px solid #ddd;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        color: black;
+      }
+
+      .snake {
+        background-color: #ffdddd;
+      }
+      .ladder {
+        background-color: #ddffdd;
+      }
+
+      .player {
+        position: absolute;
+        font-size: 18px;
+      }
+
+      #game-buttons {
+        position: relative;
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      button {
+        padding: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        width: 100%;
+        max-width: 250px;
+        margin: 10px auto;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #notification {
+        font-size: 16px;
+        font-weight: bold;
+        color: #d9534f;
+        margin-top: 10px;
+      }
+
+      #player-positions {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+
+      #game-setup {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        padding: 10px;
+      }
+
+      #game-setup button {
+        width: 100%;
+        max-width: 250px;
+        padding: 12px;
+        font-size: 16px;
+        margin: 5px 0;
+        transition: background-color 0.3s;
+      }
+
+      /* Ubah warna teks "Giliran: P1" menjadi putih */
+      #turn-indicator {
+        color: white;
+      }
+
+      @media (max-width: 600px) {
         .container {
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 10px;
-            background: url("75c06f743c343f080fa9cebd09326e37.jpg");
-            box-shadow: 10 10 10px rgba(0, 0, 0, 0.1);
+          padding: 10px;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .board-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
+          font-size: 24px;
         }
 
         .board {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
-            border: 2px solid #333;
-            background-color: white;
-            width: 90%;
-            max-width: 400px;
-            height: 90%;
-            max-height: 400px;
-            margin: 0 auto;
+          width: 80vw;
+          max-width: 300px;
+          height: 80vw;
+          max-height: 500px;
         }
 
         .cell {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            color: black;
+          font-size: 12px;
         }
 
-        .snake { background-color: #ffdddd; }
-        .ladder { background-color: #ddffdd; }
-
         .player {
-            position: absolute;
-            font-size: 18px;
+          font-size: 14px;
         }
 
         #game-buttons {
-            position: relative;
-            margin-top: 20px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        button {
-            padding: 12px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
-            width: 100%;
-            max-width: 250px;
-            margin: 10px auto;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #notification {
-            font-size: 16px;
-            font-weight: bold;
-            color: #d9534f;
-            margin-top: 10px;
-        }
-
-        #player-positions {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 20px;
+          margin-top: 50px;
         }
 
         #game-setup {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            padding: 10px;
+          gap: 8px;
         }
 
         #game-setup button {
-            width: 100%;
-            max-width: 250px;
-            padding: 12px;
-            font-size: 16px;
-            margin: 5px 0;
-            transition: background-color 0.3s;
+          width: 100%;
+          max-width: 250px;
+          font-size: 14px;
         }
+      }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .board {
-                width: 80vw;
-                max-width: 300px;
-                height: 80vw;
-                max-height: 500px;
-            }
-
-            .cell {
-                font-size: 12px;
-            }
-
-            .player {
-                font-size: 14px;
-            }
-
-            #game-buttons {
-                margin-top: 50px;
-            }
-
-            #game-setup {
-                gap: 8px;
-            }
-
-            #game-setup button {
-                width: 100%;
-                max-width: 250px;
-                font-size: 14px;
-            }
+      /* Animasi untuk efek berkedip */
+      @keyframes blink {
+        0% {
+          background-color: #ffff99;
         }
-
-        /* Animasi untuk efek berkedip */
-        @keyframes blink {
-            0% { background-color: #ffff99; }
-            50% { background-color: #ffcccc; }
-            100% { background-color: #ffff99; }
+        50% {
+          background-color: #ffcccc;
         }
-
-        .blinking {
-            animation: blink 1s ease-in-out infinite;
+        100% {
+          background-color: #ffff99;
         }
+      }
 
+      .blinking {
+        animation: blink 1s ease-in-out infinite;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1 id="game-title">🎲 Ular Tangga 🎲</h1>
-        <div id="game-setup">
-            <h3>Pilih Jumlah Pemain:</h3>
-            <button onclick="startGame(2)">2 Pemain</button>
-            <button onclick="startGame(3)">3 Pemain</button>
-            <button onclick="startGame(4)">4 Pemain</button>
-            <button onclick="startGame(5)">5 Pemain</button>
-        </div>
+      <h1 id="game-title" style="color: black">🎲 Ular Tangga 🎲</h1>
+      <div id="game-setup">
+        <h3>Pilih Jumlah Pemain:</h3>
+        <button onclick="startGame(2)">2 Pemain</button>
+        <button onclick="startGame(3)">3 Pemain</button>
+        <button onclick="startGame(4)">4 Pemain</button>
+        <button onclick="startGame(5)">5 Pemain</button>
+      </div>
 
-        <div id="game-container" style="display: none;">
-            <h3 id="turn-indicator">Giliran: P1 🔴</h3>
-            <div id="player-positions"></div>
-            <div id="dice-info" style="font-size: 16px; font-weight: bold; margin-top: 20px;"></div>
-            <div class="board-container">
-                <div class="board" id="board"></div>
-            </div>
-            <div id="game-buttons">
-                <button id="roll-dice" onclick="rollDice()">🎲 Lempar Dadu</button>
-                <p id="notification"></p>
-            </div>
+      <div id="game-container" style="display: none">
+        <h3 id="turn-indicator">Giliran: P1 🔴</h3>
+        <div id="player-positions"></div>
+        <div
+          id="dice-info"
+          style="font-size: 16px; font-weight: bold; margin-top: 20px"
+        ></div>
+        <div class="board-container">
+          <div class="board" id="board"></div>
         </div>
+        <div id="game-buttons">
+          <button id="roll-dice" onclick="rollDice()">🎲 Lempar Dadu</button>
+          <p id="notification"></p>
+        </div>
+      </div>
     </div>
 
     <script>
-        const boardSize = 10;
-        const snakes = { 16: 6, 48: 26, 64: 60, 79: 19, 93: 73, 95: 75, 98: 78 };
-        const ladders = { 1: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100 };
-        const playerColors = ['🔴', '🟢', '🔵', '🟡', '🟠'];
+      const boardSize = 10;
+      const snakes = { 16: 6, 48: 26, 64: 60, 79: 19, 93: 73, 95: 75, 98: 78 };
+      const ladders = {
+        1: 38,
+        4: 14,
+        9: 31,
+        21: 42,
+        28: 84,
+        36: 44,
+        51: 67,
+        71: 91,
+        80: 100,
+      };
+      const playerColors = ["🔴", "🟢", "🔵", "🟡", "🟠"];
 
-        let players = {};
-        let currentPlayerIndex = 0;
+      let players = {};
+      let currentPlayerIndex = 0;
 
-        function startGame(numPlayers) {
-            document.getElementById('game-title').style.display = 'none';
-            document.getElementById('game-setup').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
+      function startGame(numPlayers) {
+        document.getElementById("game-title").style.display = "none";
+        document.getElementById("game-setup").style.display = "none";
+        document.getElementById("game-container").style.display = "block";
 
-            players = {};
-            for (let i = 1; i <= numPlayers; i++) {
-                players[`P${i}`] = 0;
-            }
-            currentPlayerIndex = 0;
-
-            document.getElementById('roll-dice').textContent = "🎲 Lempar Dadu";
-            document.getElementById('roll-dice').setAttribute("onclick", "rollDice()");
-            document.getElementById('notification').textContent = "";
-
-            createBoard();
-            updateBoard();
-            updateTurnIndicator();
+        players = {};
+        for (let i = 1; i <= numPlayers; i++) {
+          players[`P${i}`] = 0;
         }
+        currentPlayerIndex = 0;
 
-        function createBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = '';
+        document.getElementById("roll-dice").textContent = "🎲 Lempar Dadu";
+        document
+          .getElementById("roll-dice")
+          .setAttribute("onclick", "rollDice()");
+        document.getElementById("notification").textContent = "";
 
-            for (let row = 0; row < boardSize; row++) {
-                for (let col = 0; col < boardSize; col++) {
-                    const position = 100 - (row * 10 + col);
-                    const cell = document.createElement('div');
-                    cell.classList.add('cell');
-                    cell.id = `cell-${position}`;
+        createBoard();
+        updateBoard();
+        updateTurnIndicator();
+      }
 
-                    // Alternate colors between black and white for the board squares
-                    if ((row + col) % 2 === 0) {
-                        cell.style.backgroundColor = 'black';
-                        cell.style.color = 'white';
-                    } else {
-                        cell.style.backgroundColor = 'white';
-                        cell.style.color = 'black';
-                    }
+      function createBoard() {
+        const board = document.getElementById("board");
+        board.innerHTML = "";
 
-                    cell.innerHTML = position;
+        for (let row = 0; row < boardSize; row++) {
+          for (let col = 0; col < boardSize; col++) {
+            const position = 100 - (row * 10 + col);
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.id = `cell-${position}`;
 
-                    if (snakes[position]) {
-                        cell.classList.add('snake');
-                        cell.innerHTML += ' 🐍';
-                    } else if (ladders[position]) {
-                        cell.classList.add('ladder');
-                        cell.innerHTML += ' 🎉';
-                    }
-
-                    board.appendChild(cell);
-                }
-            }
-        }
-
-        function updateBoard() {
-            document.querySelectorAll('.player').forEach(el => el.remove());
-
-            Object.keys(players).forEach(player => {
-                const position = players[player];
-                if (position > 0) {
-                    const playerEl = document.createElement('div');
-                    playerEl.classList.add('player');
-                    playerEl.textContent = playerColors[parseInt(player[1]) - 1];
-                    document.getElementById(`cell-${position}`).appendChild(playerEl);
-                }
-            });
-
-            let positionsText = '';
-            Object.keys(players).forEach(player => {
-                positionsText += `${player} : ${players[player]} &nbsp;&nbsp;&nbsp;`;
-            });
-            document.getElementById('player-positions').innerHTML = positionsText;
-        }
-
-        function rollDice() {
-            const diceRoll = Math.floor(Math.random() * 6) + 1;
-            const currentPlayer = `P${currentPlayerIndex + 1}`;
-            let newPosition = players[currentPlayer] + diceRoll;
-
-            document.getElementById('dice-info').textContent = `🎲 ${currentPlayer} melempar dadu: ${diceRoll}`;
-
-            if (newPosition <= 100) {
-                let oldPosition = players[currentPlayer];
-                animatePlayerMovement(currentPlayer, oldPosition, newPosition);
-                players[currentPlayer] = newPosition;
-
-                if (ladders[newPosition]) {
-                    const from = oldPosition;
-                    const to = ladders[newPosition];
-                    document.getElementById('notification').textContent = `${currentPlayer} naik dari posisi ${from} ke posisi ${to}! 🎉`;
-                    animateBlinking(from, to);
-                    players[currentPlayer] = to;
-                } else if (snakes[newPosition]) {
-                    const from = oldPosition;
-                    const to = snakes[newPosition];
-                    document.getElementById('notification').textContent = `${currentPlayer} turun dari posisi ${from} ke posisi ${to} 🐍`;
-                    animateBlinking(from, to);
-                    players[currentPlayer] = to;
-                } else {
-                    document.getElementById('notification').textContent = '';  // Kosongkan notifikasi jika tidak ada tangga atau ular
-                }
-
-                if (players[currentPlayer] === 100) {
-                    if (confirm(`🎉 ${currentPlayer} MENANG! 🏆 Apakah Anda yakin ingin mulai ulang permainan?`)) {
-                        location.reload();
-                    }
-                    return;
-                }
+            // Alternatif warna abu-abu dan hitam
+            if ((row + col) % 2 === 0) {
+              cell.style.backgroundColor = "gray"; // Abu-abu
+              cell.style.color = "white";
+            } else {
+              cell.style.backgroundColor = "black"; // Hitam
+              cell.style.color = "white";
             }
 
-            currentPlayerIndex = (currentPlayerIndex + 1) % Object.keys(players).length;
-            updateBoard();
-            updateTurnIndicator();
-        }
+            cell.innerHTML = position;
 
-        function updateTurnIndicator() {
-            document.getElementById('turn-indicator').textContent = `Giliran: P${currentPlayerIndex + 1} ${playerColors[currentPlayerIndex]}`;
-        }
+            if (snakes[position]) {
+              cell.classList.add("snake");
+              cell.innerHTML += " 🐍";
+            } else if (ladders[position]) {
+              cell.classList.add("ladder");
+              cell.innerHTML += " 🎉";
+            }
 
-        function animatePlayerMovement(player, oldPosition, newPosition) {
-            const oldCell = document.getElementById(`cell-${oldPosition}`);
-            const newCell = document.getElementById(`cell-${newPosition}`);
-            const playerEl = document.createElement('div');
-            playerEl.classList.add('player');
+            board.appendChild(cell);
+          }
+        }
+      }
+
+      function updateBoard() {
+        document.querySelectorAll(".player").forEach((el) => el.remove());
+
+        Object.keys(players).forEach((player) => {
+          const position = players[player];
+          if (position > 0) {
+            const playerEl = document.createElement("div");
+            playerEl.classList.add("player");
             playerEl.textContent = playerColors[parseInt(player[1]) - 1];
+            document.getElementById(`cell-${position}`).appendChild(playerEl);
+          }
+        });
 
-            newCell.appendChild(playerEl);
+        let positionsText = "";
+        Object.keys(players).forEach((player) => {
+          positionsText += `${player} : ${players[player]} &nbsp;&nbsp;&nbsp;`;
+        });
+        document.getElementById("player-positions").innerHTML = positionsText;
+      }
+
+      function rollDice() {
+        const diceRoll = Math.floor(Math.random() * 6) + 1;
+        const currentPlayer = `P${currentPlayerIndex + 1}`;
+        let newPosition = players[currentPlayer] + diceRoll;
+
+        document.getElementById(
+          "dice-info"
+        ).textContent = `🎲 ${currentPlayer} melempar dadu: ${diceRoll}`;
+
+        if (newPosition <= 100) {
+          let oldPosition = players[currentPlayer];
+          animatePlayerMovement(currentPlayer, oldPosition, newPosition);
+          players[currentPlayer] = newPosition;
+
+          if (ladders[newPosition]) {
+            const from = oldPosition;
+            const to = ladders[newPosition];
+            document.getElementById(
+              "notification"
+            ).textContent = `${currentPlayer} naik dari posisi ${from} ke posisi ${to}! 🎉`;
+            animateBlinking(from, to);
+            players[currentPlayer] = to;
+          } else if (snakes[newPosition]) {
+            const from = oldPosition;
+            const to = snakes[newPosition];
+            document.getElementById(
+              "notification"
+            ).textContent = `${currentPlayer} turun dari posisi ${from} ke posisi ${to} 🐍`;
+            animateBlinking(from, to);
+            players[currentPlayer] = to;
+          } else {
+            document.getElementById("notification").textContent = ""; // Kosongkan notifikasi jika tidak ada tangga atau ular
+          }
+
+          if (players[currentPlayer] === 100) {
+            if (
+              confirm(
+                `🎉 ${currentPlayer} MENANG! 🏆 Apakah Anda yakin ingin mulai ulang permainan?`
+              )
+            ) {
+              location.reload();
+            }
+            return;
+          }
         }
 
-        function animateBlinking(from, to) {
-            const fromCell = document.getElementById(`cell-${from}`);
-            const toCell = document.getElementById(`cell-${to}`);
-            fromCell.classList.add('blinking');
-            toCell.classList.add('blinking');
+        currentPlayerIndex =
+          (currentPlayerIndex + 1) % Object.keys(players).length;
+        updateBoard();
+        updateTurnIndicator();
+      }
 
-            setTimeout(() => {
-                fromCell.classList.remove('blinking');
-                toCell.classList.remove('blinking');
-            }, 2000);  // Efek berkedip selama 2 detik
-        }
+      function updateTurnIndicator() {
+        document.getElementById("turn-indicator").textContent = `Giliran: P${
+          currentPlayerIndex + 1
+        } ${playerColors[currentPlayerIndex]}`;
+      }
+
+      function animatePlayerMovement(player, oldPosition, newPosition) {
+        const oldCell = document.getElementById(`cell-${oldPosition}`);
+        const newCell = document.getElementById(`cell-${newPosition}`);
+        const playerEl = document.createElement("div");
+        playerEl.classList.add("player");
+        playerEl.textContent = playerColors[parseInt(player[1]) - 1];
+
+        newCell.appendChild(playerEl);
+      }
+
+      function animateBlinking(from, to) {
+        const fromCell = document.getElementById(`cell-${from}`);
+        const toCell = document.getElementById(`cell-${to}`);
+        fromCell.classList.add("blinking");
+        toCell.classList.add("blinking");
+
+        setTimeout(() => {
+          fromCell.classList.remove("blinking");
+          toCell.classList.remove("blinking");
+        }, 2000); // Efek berkedip selama 2 detik
+      }
     </script>
-</body>
+  </body>
 </html>
